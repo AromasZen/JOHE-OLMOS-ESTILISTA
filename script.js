@@ -734,7 +734,7 @@ function renderBookingStep() {
   } else if (currentBookingStep === 1) {
     // Step 2: Date & Time
     customStepContent.classList.remove("hidden");
-    
+
     customStepContent.innerHTML = `
       <div class="datetime-picker">
         <div class="form-group">
@@ -753,10 +753,10 @@ function renderBookingStep() {
 
     const renderTimes = async (selectedDate) => {
       timesContainer.innerHTML = '<div class="spinner-small" style="margin: 0 auto; grid-column: 1/-1;"></div>';
-      
+
       let baseTimes = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
       let bookedTimes = [];
-      
+
       try {
         // Consultar bloqueos y extras
         const { data: configData, error: configError } = await supabaseClient
@@ -765,7 +765,7 @@ function renderBookingStep() {
           .eq("empresa_id", empresaId)
           .eq("fecha", selectedDate)
           .maybeSingle();
-          
+
         if (configData) {
           if (configData.bloqueado) {
             timesContainer.innerHTML = '<p style="color: #EA4335; grid-column: 1/-1; text-align: center;">Día no disponible.</p>';
@@ -800,8 +800,8 @@ function renderBookingStep() {
       baseTimes = baseTimes.filter(t => !bookedTimes.includes(t));
 
       if (baseTimes.length === 0) {
-         timesContainer.innerHTML = '<p style="color: #ccc; grid-column: 1/-1; text-align: center;">No hay turnos disponibles para este día.</p>';
-         return;
+        timesContainer.innerHTML = '<p style="color: #ccc; grid-column: 1/-1; text-align: center;">No hay turnos disponibles para este día.</p>';
+        return;
       }
 
       timesContainer.innerHTML = baseTimes.map(t => `
@@ -814,7 +814,7 @@ function renderBookingStep() {
           renderBookingStep();
         });
       });
-      
+
       if (!baseTimes.includes(bookingSelections.time)) {
         bookingSelections.time = null;
         updateBookingNextBtn();
@@ -917,13 +917,13 @@ function updateBookingNextBtn() {
     const dniValid = u.dni.trim().length >= 7;
     const emailValid = u.email.trim().includes('@') && u.email.trim().includes('.');
     const phoneValid = u.telefono.trim().length >= 8;
-    
+
     canProceed = nameValid && lastNameValid && dniValid && emailValid && phoneValid;
   }
   else if (currentBookingStep === 3) canProceed = true;
 
   bookingNextBtn.disabled = !canProceed;
-  bookingNextBtn.textContent = isLast ? "📱 Reservar por WhatsApp" : "Siguiente →";
+  bookingNextBtn.textContent = isLast ? "📱 confirmar reserva" : "Siguiente →";
 }
 
 bookingPrevBtn.addEventListener("click", () => {
