@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - JOHE OLMOS ESTILISTA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *,
@@ -259,7 +261,9 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* Toast notification */
@@ -309,10 +313,11 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="upload-container">
-    <a href="index.html" class="back-link">← Volver al inicio</a>
+    <a href="admin.html" class="back-link">← Volver al inicio</a>
 
     <div class="upload-header">
       <div class="icon">📸</div>
@@ -443,11 +448,11 @@
           .getPublicUrl(nombreArchivo).data.publicUrl;
 
         // Insert into table
-       const insertData = {
-  titulo: titulo,
-  imagen_url: urlImagen,
-  empresa_id: empresaId
-};
+        const insertData = {
+          titulo: titulo,
+          imagen_url: urlImagen,
+          empresa_id: empresaId
+        };
         const { error: insertError } = await supabaseClient
           .from("trabajos")
           .insert(insertData);
@@ -478,4 +483,5 @@
     }
   </script>
 </body>
+
 </html>
