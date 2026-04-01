@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - JOHE OLMOS ESTILISTA</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Estilos base -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      padding-top: 80px;
+      /* espaciado para navbar fija si hay */
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: var(--card-bg, #111);
+      border-radius: 12px;
+      border: 1px solid var(--border, #222);
+    }
+
+    .admin-header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .admin-actions button {
+      margin-left: 10px;
+    }
+
+    /* Estilos del Calendario sobreescribiendo FullCalendar */
+    #calendar {
+      background: var(--card-bg, #111);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border, #222);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .fc-theme-standard td,
+    .fc-theme-standard th {
+      border-color: #333;
+    }
+
+    .fc-theme-standard .fc-scrollgrid {
+      border-color: #333;
+    }
+
+    .fc-col-header-cell-cushion,
+    .fc-daygrid-day-number {
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    .fc .fc-toolbar-title {
+      font-family: 'Cinzel', serif;
+      color: var(--accent);
+      text-transform: capitalize;
+    }
+
+    .fc .fc-button-primary {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .fc .fc-button-primary:hover {
+      background-color: #b5952f;
+      border-color: #b5952f;
+    }
+
+    .fc .fc-button-primary:disabled {
+      background-color: #555;
+      border-color: #555;
+      color: #888;
+    }
+
+    .fc-event {
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      padding: 2px 4px;
+    }
+
+    /* Modales de Admin */
+    .admin-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-modal-overlay.active {
+      display: flex;
+    }
+
+    .admin-modal {
+      background: var(--card-bg, #1a1a1a);
+      width: 90%;
+      max-width: 500px;
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid var(--accent);
+      position: relative;
+    }
+
+    .admin-modal h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--accent);
+      margin-top: 0;
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .admin-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .admin-modal p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .modal-detail-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 10px 0;
+    }
+
+    .modal-detail-label {
+      font-weight: 600;
+      color: #aaa;
+    }
+
+    .contact-buttons hr {
+      border: none;
+      border-top: 1px solid #333;
+      margin: 20px 0;
+    }
+
+    .contact-buttons button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .btn-wsp {
+      background: #25D366;
+      color: black;
+    }
+
+    .btn-email {
+      background: #EA4335;
+      color: white;
+      border: none;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: #0f0f0f;
+      border: 1px solid #333;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn-danger {
+      background: rgba(234, 67, 53, 0.1);
+      border: 1px solid #EA4335;
+      color: #EA4335;
+    }
+
+    .btn-danger:hover {
+      background: #EA4335;
+      color: white;
+    }
+  </style>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+</head>
+
+<body>
+
+  <!-- Navbar Simple Administrador -->
+  <nav class="navbar navbar-scrolled">
+    <div class="navbar-inner">
+      <div class="navbar-logo">JOHE OLMOS <span>ADMIN</span></div>
+      <ul class="navbar-links">
+        <li><a href="index.html">Ver Sitio</a></li>
+        <li><a href="trabajos.html">Subir Trabajos</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="navbar-cta-outline" id="btnLogout">Cerrar Sesión</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Panel de Reservas</h1>
+      <div class="admin-actions">
+        <button class="btn-outline" id="btnBloquearDia">Bloquear Fechas / Extras</button>
+      </div>
+    </div>
+
+    <!-- Contenedor del Calendario -->
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Modal: Detalles del Turno -->
+  <div class="admin-modal-overlay" id="turnoModalOverlay">
+    <div class="admin-modal">
+      <button class="admin-modal-close" onclick="closeTurnoModal()">✕</button>
+      <h3 id="modalTurnoTitle">Detalles de Reserva</h3>
+      <div id="turnoDetails">
+        <!-- Rellenado dinámicamente -->
+      </div>
+      <div class="contact-buttons">
+        <hr>
+        <button class="btn-primary btn-wsp" id="btnContactWsp">💬 Contactar por WhatsApp</button>
+        <button class="btn-primary btn-email" id="btnContactEmail">✉️ Enviar Correo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Bloquear o Administrar Día -->
+  <div class="admin-modal-overlay" id="configModalOverlay">
+    <div class="admin-modal">
+      <button class="admin-modal-close" onclick="closeConfigModal()">✕</button>
+      <h3>Configurar Día</h3>
+      <p style="font-size: 0.9em; color: #999;">Selecciona una fecha para ver o cambiar sus disponibilidades especiales.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label">Fecha a modificar</label>
+        <input type="date" id="configFecha" class="form-input">
+      </div>
+      <hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
+
+      <div id="configActions" style="opacity: 0.5; pointer-events: none;">
+        <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+          <label class="form-label" style="margin: 0;">Bloquear este día entero</label>
+          <input type="checkbox" id="configBloquear" style="width: 20px; height: 20px;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Horarios Extras (separados por coma)</label>
+          <input type="text" id="configExtras" class="form-input" placeholder="Ej: 12:30, 19:00">
+          <span style="font-size: 0.8rem; color: #888;">Estos horarios se sumarán a la lista default.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Horarios Bloqueados (separados por coma)</label>
+          <input type="text" id="configBloqueados" class="form-input" placeholder="Ej: 13:00, 14:00">
+          <span style="font-size: 0.8rem; color: #888;">Estos horarios desaparecerán si el día no está bloqueado por
+            completo.</span>
+        </div>
+
+        <button class="btn-primary" id="btnGuardarConfig" style="width: 100%; margin-top: 10px;">Guardar
+          Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script principal de Admin -->
+  <script src="admin.js"></script>
+
+</body>
+
+</html>
