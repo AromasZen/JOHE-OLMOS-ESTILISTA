@@ -34,6 +34,18 @@ async function checkAuth() {
 document.addEventListener('DOMContentLoaded', async () => {
     await checkAuth();
 
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    const navActions = document.getElementById('navActions');
+    
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            if(navActions) navActions.classList.toggle('active');
+        });
+    }
+
     // Logout
     document.getElementById('btnLogout').addEventListener('click', async () => {
         await supabaseClient.auth.signOut();
@@ -57,14 +69,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== FULLCALENDAR INIT =====
 async function initCalendar() {
     const calendarEl = document.getElementById('calendar');
+    const isMobile = window.innerWidth < 768;
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
+        initialView: isMobile ? 'timeGridDay' : 'timeGridWeek',
         locale: 'es',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: isMobile ? 'timeGridDay,listWeek' : 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         slotMinTime: '08:00:00',
         slotMaxTime: '21:00:00',
