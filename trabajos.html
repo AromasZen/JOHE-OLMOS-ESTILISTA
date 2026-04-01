@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - JOHE OLMOS ESTILISTA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #121212;
+      --bg-card: #1c1c1c;
+      --accent: #d4af37;
+      --accent-hover: #e5c05c;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --border: #333333;
+      --success: #22c55e;
+      --success-hover: #16a34a;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .upload-container {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .upload-header .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .upload-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .upload-header h2 span {
+      color: var(--accent);
+    }
+
+    .upload-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.15);
+    }
+
+    .form-input::placeholder {
+      color: #555;
+    }
+
+    /* File upload area */
+    .file-upload-area {
+      position: relative;
+      width: 100%;
+      min-height: 180px;
+      background: var(--bg-card);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      overflow: hidden;
+    }
+
+    .file-upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(212, 165, 116, 0.03);
+    }
+
+    .file-upload-area.has-file {
+      border-color: var(--accent);
+      border-style: solid;
+    }
+
+    .file-upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-upload-placeholder {
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .file-upload-placeholder .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .file-upload-placeholder p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .file-upload-placeholder .hint {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .file-preview {
+      width: 100%;
+      height: 100%;
+      display: none;
+      position: relative;
+    }
+
+    .file-preview img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .file-preview .file-name {
+      text-align: center;
+      padding: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .file-upload-area.has-file .file-upload-placeholder {
+      display: none;
+    }
+
+    .file-upload-area.has-file .file-preview {
+      display: block;
+    }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--success);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      font-family: inherit;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: var(--success-hover);
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-submit .spinner-btn {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    .btn-submit.loading .spinner-btn {
+      display: inline-block;
+    }
+
+    .btn-submit.loading .btn-label {
+      display: none;
+    }
+
+    .btn-submit .loading-label {
+      display: none;
+    }
+
+    .btn-submit.loading .loading-label {
+      display: inline;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .toast.error {
+      background: var(--error);
+      color: #fff;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="upload-container">
+    <a href="index.html" class="back-link">← Volver al inicio</a>
+
+    <div class="upload-header">
+      <div class="icon">📸</div>
+      <h2>Subir <span>trabajo</span></h2>
+      <p>Sube una foto de tu trabajo para mostrarlo en el portafolio</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="titulo">Nombre del trabajo</label>
+      <input type="text" id="titulo" class="form-input" placeholder="Ej: Corte degradado moderno">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Imagen del trabajo</label>
+      <div class="file-upload-area" id="fileUploadArea">
+        <input type="file" id="imagen" accept="image/*">
+        <div class="file-upload-placeholder">
+          <div class="icon">📷</div>
+          <p>Haz clic o arrastra una imagen aquí</p>
+          <p class="hint">JPG, PNG, WEBP — máx. 10MB</p>
+        </div>
+        <div class="file-preview" id="filePreview">
+          <img src="" alt="Preview" id="previewImg">
+          <div class="file-name" id="fileName"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="btnSubir" onclick="subirTrabajo()">
+      <div class="spinner-btn"></div>
+      <span class="btn-label">📤 Subir trabajo</span>
+      <span class="loading-label">Subiendo...</span>
+    </button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://nkkyyqqqusodhwqvprik.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ra3l5cXFxdXNvZGh3cXZwcmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMjU1MDIsImV4cCI6MjA4ODYwMTUwMn0.Gs5bdRrv9HNViruVjr8mQl4Oh2Ei1Hyryr0vxpdPPhU"
+    );
+
+    const empresaId = 2;
+
+    // File preview
+    const fileInput = document.getElementById("imagen");
+    const fileUploadArea = document.getElementById("fileUploadArea");
+    const filePreview = document.getElementById("filePreview");
+    const previewImg = document.getElementById("previewImg");
+    const fileNameEl = document.getElementById("fileName");
+
+    fileInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        fileUploadArea.classList.add("has-file");
+        fileNameEl.textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        fileUploadArea.classList.remove("has-file");
+      }
+    });
+
+    // Toast
+    function showToast(message, type) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "toast " + type;
+      requestAnimationFrame(() => {
+        toast.classList.add("show");
+      });
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
+    }
+
+    // Upload
+    async function subirTrabajo() {
+      const titulo = document.getElementById("titulo").value.trim();
+      const file = document.getElementById("imagen").files[0];
+      const btn = document.getElementById("btnSubir");
+
+      if (!titulo) {
+        showToast("⚠️ Escribe un nombre para el trabajo", "error");
+        return;
+      }
+
+      if (!file) {
+        showToast("⚠️ Selecciona una imagen", "error");
+        return;
+      }
+
+      // Validate file size (10MB max)
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("⚠️ La imagen es muy grande (máx. 10MB)", "error");
+        return;
+      }
+
+      btn.classList.add("loading");
+      btn.disabled = true;
+
+      try {
+        const nombreArchivo = empresaId + "/" + Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+        // Upload image to storage
+        const { data, error } = await supabaseClient
+          .storage
+          .from("trabajos")
+          .upload(nombreArchivo, file);
+
+        if (error) {
+          console.error("Error subiendo imagen:", error);
+          showToast("❌ Error al subir la imagen", "error");
+          btn.classList.remove("loading");
+          btn.disabled = false;
+          return;
+        }
+
+        // Get public URL
+        const urlImagen = supabaseClient
+          .storage
+          .from("trabajos")
+          .getPublicUrl(nombreArchivo).data.publicUrl;
+
+        // Insert into table
+       const insertData = {
+  titulo: titulo,
+  imagen_url: urlImagen,
+  empresa_id: empresaId
+};
+        const { error: insertError } = await supabaseClient
+          .from("trabajos")
+          .insert(insertData);
+
+        if (insertError) {
+          console.error("Error guardando trabajo:", insertError);
+          showToast("❌ Error al guardar el trabajo", "error");
+          btn.classList.remove("loading");
+          btn.disabled = false;
+          return;
+        }
+
+        showToast("✅ ¡Trabajo subido exitosamente!", "success");
+
+        // Reset form
+        document.getElementById("titulo").value = "";
+        document.getElementById("imagen").value = "";
+        fileUploadArea.classList.remove("has-file");
+        previewImg.src = "";
+        fileNameEl.textContent = "";
+      } catch (err) {
+        console.error("Error:", err);
+        showToast("❌ Error de conexión", "error");
+      }
+
+      btn.classList.remove("loading");
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

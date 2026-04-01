@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOHE OLMOS ESTILISTA - Elegancia y Estilo | Peluquería de Autor</title>
+  <meta name="description"
+    content="Encuentra tu corte de pelo ideal. Peluquería profesional con los mejores estilistas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Supabase JS v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script> const empresaId = 2; </script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ===== ANIMATED BACKGROUND ===== -->
+  <div class="animated-bg">
+    <!-- Floating orbs -->
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <!-- Floating particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <!-- Subtle grid -->
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="navbar-logo">JOHE OLMOS <span>ESTILISTA</span></div>
+      <ul class="navbar-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#barberos">Barberos</a></li>
+        <li><a href="#trabajos">Trabajos</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="navbar-cta-outline" id="navQuizBtn">¿Qué corte elegir?</button>
+        <button class="navbar-cta" id="navBookingBtn">Reservar Turno</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="inicio">
+    <div class="hero-content">
+      <div class="hero-stars">
+        <span class="stars">★★★★★</span>
+        <span class="label">+500 clientes satisfechos</span>
+      </div>
+      <h1>Tu estilo,<br><span class="accent">nuestra pasión</span></h1>
+      <p class="hero-desc">Descubre el corte perfecto para ti con nuestro asistente inteligente. Profesionales dedicados
+        a realzar tu mejor versión.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" id="heroBookingBtn">📅 Reservar mi turno</button>
+        <button class="btn-outline" id="heroQuizBtn">✨ Encuentra tu corte ideal</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INFO BAR ===== -->
+  <section class="info-bar">
+    <div class="info-bar-inner">
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">Dirección</div>
+          <div class="info-value">Almafuerte 970, Bahía Blanca</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🕒</div>
+        <div>
+          <div class="info-label">Horarios</div>
+          <div class="info-value">Lunes a Viernes: 9:00 - 13:00, 16:00 - 20:00</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+          <div class="info-label">Teléfono / WhatsApp</div>
+          <div class="info-value">+54 9 291 422-8704</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOBRE NOSOTROS ===== -->
+  <section class="section about-section" id="nosotros">
+    <div class="about-grid">
+      <div class="about-content">
+        <div class="section-tag">Nuestra Historia</div>
+        <h2 class="section-title">Sobre <span class="accent">JOHE OLMOS</span></h2>
+        <p class="about-text">
+          Establecidos desde 2026, **JOHE OLMOS ESTILISTA** es sinónimo de elegancia y sofisticación. 
+          Dirigido al caballero moderno que valora el detalle y la excelencia.
+          Nuestro equipo de estilistas de autor está unido por el mismo objetivo: brindar un servicio
+          de primera calidad donde cada detalle cuenta.
+        </p>
+        <p class="about-text">
+          Sabiendo que la imagen de las personas es algo muy importante, por ello tomamos la
+          responsabilidad de dar el <strong>100% de nuestras habilidades</strong> en cada corte de cabello.
+        </p>
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-num">3</span>
+            <span class="stat-label">Barberos Pro</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Calidad</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">2026</span>
+            <span class="stat-label">Desde</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-image-container">
+        <div class="about-image">
+          <img src="assets/interior.png" alt="Hustle Studio Interior">
+        </div>
+        <div class="about-experience">
+          <span class="exp-num">Elite</span>
+          <span class="exp-label">Experience</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BARBEROS ===== -->
+  <section class="section" id="barberos">
+    <div class="section-header">
+      <div class="section-tag">Nuestro Equipo</div>
+      <h2 class="section-title">Nuestros <span class="accent">Barberos</span></h2>
+      <p class="section-desc">Profesionales apasionados por el arte de la barbería, listos para darte el mejor look.</p>
+    </div>
+    <div class="barbers-grid">
+      <!-- Los barberos se cargarán dinámicamente desde Supabase -->
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Cargando equipo...</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== TRABAJOS / GALERÍA ===== -->
+  <section class="section trabajos-section" id="trabajos">
+    <div class="section-header">
+      <div class="section-tag">Nuestro Portafolio</div>
+      <h2 class="section-title">Trabajos <span class="accent">realizados</span></h2>
+      <p class="section-desc">Mira algunos de nuestros mejores trabajos y déjate inspirar para tu próximo look.</p>
+    </div>
+
+    <!-- Loading state -->
+    <div class="trabajos-loading" id="trabajosLoading">
+      <div class="spinner"></div>
+      <p>Cargando trabajos...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="trabajos-empty hidden" id="trabajosEmpty">
+      <div class="trabajos-empty-icon">📷</div>
+      <h4>Aún no hay trabajos publicados</h4>
+      <p>Pronto subiremos nuestros mejores cortes y estilos.</p>
+    </div>
+
+    <!-- Grid de trabajos -->
+    <div class="trabajos-grid hidden" id="trabajosGrid"></div>
+
+    <!-- Botón ver más -->
+    <div class="trabajos-load-more hidden" id="trabajosLoadMore">
+      <button class="btn-load-more" id="btnVerMas">
+        <span class="btn-load-more-text">Ver más trabajos</span>
+        <span class="btn-load-more-spinner hidden" id="btnVerMasSpinner">
+          <div class="spinner-small"></div>
+        </span>
+      </button>
+      <p class="trabajos-count" id="trabajosCount"></p>
+    </div>
+  </section>
+
+  <!-- ===== UBICACIÓN Y HORARIOS ===== -->
+  <section class="section location-section" id="contacto">
+    <div class="section-header">
+      <div class="section-tag">Visítanos</div>
+      <h2 class="section-title">Ubicación y <span class="accent">Horarios</span></h2>
+      <p class="section-desc">Te esperamos en nuestro local con la mejor atención y profesionalismo.</p>
+    </div>
+
+    <div class="location-grid">
+      <div class="location-info">
+        <div class="info-box">
+          <h3>📍 Nuestra Dirección</h3>
+          <p>Almafuerte 970, Bahía Blanca</p>
+        </div>
+
+        <div class="info-box">
+          <h3>🕒 Horarios de Atención</h3>
+          <ul class="hours-list">
+            <li><span>Lunes a Viernes</span> <span>9:00 - 13:00, 16:00 - 20:00 hs</span></li>
+            <li><span>Sábados</span> <span>9:00 - 20:00 hs</span></li>
+          </ul>
+          <p class="status-notice">Trabajamos por orden de llegada y con reserva previa de turnos.</p>
+        </div>
+
+        <div class="location-actions">
+          <p>Conocé más sobre nosotros aquí o hacé clic <a href="https://wa.me/5492914228704" target="_blank"
+              class="accent-link">acá</a> para reservar tu turno vía WhatsApp.</p>
+          <button class="btn-primary" onclick="openBooking()">📅 Reservar Turno</button>
+        </div>
+      </div>
+
+      <div class="location-map">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3112.994959929796!2d-62.2870113!3d-38.7179247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95edbc9f4d113125%3A0x5a42fa668d626cf1!2sAlmafuerte%20970%2C%20B8000AST%20Bah%C3%ADa%20Blanca%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1775061839225!5m2!1ses!2sar"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="contacto">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="navbar-logo">JOHE OLMOS <span>ESTILISTA</span></div>
+        <p>Tu destino para un estilo impecable. Profesionales dedicados a realzar tu mejor versión con las últimas
+          tendencias.</p>
+      </div>
+      <div>
+        <h3>Horarios</h3>
+        <ul class="footer-hours">
+          <li><span>Lunes - Viernes</span><span>10:00 - 20:00</span></li>
+          <li><span>Sábado</span><span>10:00 - 17:00</span></li>
+          <li><span>Domingo</span><span class="closed">Cerrado</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <div class="footer-contact">
+          <a href="tel:5492914228704">📞 +54 9 291 422-8704</a>
+          <a href="https://wa.me/5492914228704" target="_blank" rel="noopener noreferrer">💬 WhatsApp: +54 9 291 422-8704</a>
+          <div>📍 Almafuerte 970, Bahía Blanca</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 JOHE OLMOS ESTILISTA. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ===== QUIZ MODAL ===== -->
+  <div class="modal-overlay" id="quizModal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <!-- Quiz Steps -->
+      <div id="quizContent">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="quiz-step-label" id="stepLabel"></div>
+        <h2 class="quiz-title" id="quizTitle"></h2>
+        <p class="quiz-subtitle" id="quizSubtitle"></p>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-nav">
+          <button class="btn-ghost" id="prevBtn">← Anterior</button>
+          <button class="btn-primary small" id="nextBtn">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsContent" class="hidden">
+        <div id="resultsInner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BOOKING MODAL ===== -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-backdrop" id="bookingBackdrop"></div>
+    <div class="modal">
+      <button class="modal-close" id="bookingClose">✕</button>
+
+      <div id="bookingContent">
+        <div class="progress-bar" id="bookingProgressBar"></div>
+        <div class="quiz-step-label" id="bookingStepLabel"></div>
+        <h2 class="quiz-title" id="bookingTitle"></h2>
+        <p class="quiz-subtitle" id="bookingSubtitle"></p>
+
+        <div class="booking-options" id="bookingOptions"></div>
+
+        <!-- Custom Step Content -->
+        <div id="customStepContent" class="hidden"></div>
+
+        <div class="quiz-nav">
+          <button class="btn-ghost" id="bookingPrevBtn">← Anterior</button>
+          <button class="btn-primary small" id="bookingNextBtn">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIGHTBOX MODAL ===== -->
+  <div class="lightbox-overlay" id="lightboxModal">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightboxClose">✕</button>
+      <img src="" alt="" id="lightboxImage">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+</body>
+
+</html>
