@@ -734,33 +734,101 @@ function renderBookingStep() {
   } else if (currentBookingStep === 1) {
     // Step 2: Date & Time
     customStepContent.classList.remove("hidden");
-    const times = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-
+    
     customStepContent.innerHTML = `
       <div class="datetime-picker">
         <div class="form-group">
           <label class="form-label">Selecciona el día</label>
-          <input type="date" id="bookingDate" value="${bookingSelections.date}" class="form-input">
+          <input type="date" id="bookingDate" value="${bookingSelections.date}" min="${new Date().toISOString().split('T')[0]}" class="form-input">
         </div>
-        <label class="form-label">Horarios disponibles</label>
-        <div class="times-grid">
-          ${times.map(t => `
-            <div class="time-slot ${bookingSelections.time === t ? 'selected' : ''}" data-time="${t}">${t} hs</div>
-          `).join('')}
+        <label class="form-label" id="horariosLabel">Horarios disponibles</label>
+        <div class="times-grid" id="timesGridContainer">
+          <div class="spinner-small" style="margin: 0 auto; grid-column: 1/-1;"></div>
         </div>
       </div>
     `;
 
-    document.getElementById("bookingDate").addEventListener("change", (e) => {
+    const datePicker = document.getElementById("bookingDate");
+    const timesContainer = document.getElementById("timesGridContainer");
+
+    const renderTimes = async (selectedDate) => {
+      timesContainer.innerHTML = '<div class="spinner-small" style="margin: 0 auto; grid-column: 1/-1;"></div>';
+      
+      let baseTimes = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+      let bookedTimes = [];
+      
+      try {
+        // Consultar bloqueos y extras
+        const { data: configData, error: configError } = await supabaseClient
+          .from("config_turnos")
+          .select("*")
+          .eq("empresa_id", empresaId)
+          .eq("fecha", selectedDate)
+          .maybeSingle();
+          
+        if (configData) {
+          if (configData.bloqueado) {
+            timesContainer.innerHTML = '<p style="color: #EA4335; grid-column: 1/-1; text-align: center;">Día no disponible.</p>';
+            return;
+          }
+          if (configData.horarios_extra && configData.horarios_extra.trim() !== '') {
+            const extras = configData.horarios_extra.split(',').map(s => s.trim()).filter(Boolean);
+            baseTimes = [...baseTimes, ...extras].sort();
+          }
+          if (configData.horarios_bloqueados && configData.horarios_bloqueados.trim() !== '') {
+            const bloqueados = configData.horarios_bloqueados.split(',').map(s => s.trim()).filter(Boolean);
+            baseTimes = baseTimes.filter(t => !bloqueados.includes(t));
+          }
+        }
+
+        // Consultar turnos ya reservados para ese día
+        const { data: reservasData, error: reservasError } = await supabaseClient
+          .from("reservas")
+          .select("hora")
+          .eq("empresa_id", empresaId)
+          .eq("fecha", selectedDate)
+          .neq("estado", "cancelado"); // Ignorar los cancelados si en algún futuro usas ese estado
+
+        if (reservasData) {
+          bookedTimes = reservasData.map(r => r.hora);
+        }
+      } catch (e) {
+        console.error("Error fetching turnos y disponibilidad:", e);
+      }
+
+      // Filtrar los horarios que ya están reservados
+      baseTimes = baseTimes.filter(t => !bookedTimes.includes(t));
+
+      if (baseTimes.length === 0) {
+         timesContainer.innerHTML = '<p style="color: #ccc; grid-column: 1/-1; text-align: center;">No hay turnos disponibles para este día.</p>';
+         return;
+      }
+
+      timesContainer.innerHTML = baseTimes.map(t => `
+        <div class="time-slot ${bookingSelections.time === t ? 'selected' : ''}" data-time="${t}">${t} hs</div>
+      `).join('');
+
+      timesContainer.querySelectorAll(".time-slot").forEach(el => {
+        el.addEventListener("click", () => {
+          bookingSelections.time = el.dataset.time;
+          renderBookingStep();
+        });
+      });
+      
+      if (!baseTimes.includes(bookingSelections.time)) {
+        bookingSelections.time = null;
+        updateBookingNextBtn();
+      }
+    };
+
+    datePicker.addEventListener("change", (e) => {
       bookingSelections.date = e.target.value;
+      renderTimes(bookingSelections.date);
+      updateBookingNextBtn();
     });
 
-    customStepContent.querySelectorAll(".time-slot").forEach(el => {
-      el.addEventListener("click", () => {
-        bookingSelections.time = el.dataset.time;
-        renderBookingStep();
-      });
-    });
+    renderTimes(bookingSelections.date);
+
   } else if (currentBookingStep === 2) {
     // Step 3: User Info
     customStepContent.classList.remove("hidden");
@@ -844,7 +912,13 @@ function updateBookingNextBtn() {
   else if (currentBookingStep === 1) canProceed = !!bookingSelections.date && !!bookingSelections.time;
   else if (currentBookingStep === 2) {
     const u = bookingSelections.user;
-    canProceed = u.nombre.trim() && u.apellido.trim() && u.dni.trim() && u.email.trim() && u.telefono.trim();
+    const nameValid = u.nombre.trim().length >= 2;
+    const lastNameValid = u.apellido.trim().length >= 2;
+    const dniValid = u.dni.trim().length >= 7;
+    const emailValid = u.email.trim().includes('@') && u.email.trim().includes('.');
+    const phoneValid = u.telefono.trim().length >= 8;
+    
+    canProceed = nameValid && lastNameValid && dniValid && emailValid && phoneValid;
   }
   else if (currentBookingStep === 3) canProceed = true;
 
@@ -868,38 +942,82 @@ bookingNextBtn.addEventListener("click", () => {
   }
 });
 
-function finishBooking() {
+async function finishBooking() {
   const h = bookingSelections.hairdresser;
   const u = bookingSelections.user;
   const phone = "5492914228704";
 
-  const message = `¡Hola JOHE OLMOS ESTILISTA! Quisiera reservar un turno:
-- *Cliente:* ${u.nombre} ${u.apellido}
-- *Barbero:* ${h.nombre}
-- *Fecha:* ${bookingSelections.date}
-- *Hora:* ${bookingSelections.time} hs
-- *Total:* $${h.precio_base || 2500}
-- *DNI:* ${u.dni}
-- *Teléfono:* ${u.telefono}`;
+  bookingNextBtn.disabled = true;
+  bookingNextBtn.textContent = "Procesando...";
 
+  try {
+    const { error } = await supabaseClient
+      .from('reservas')
+      .insert({
+        empresa_id: empresaId,
+        cliente_nombre: u.nombre.trim(),
+        cliente_apellido: u.apellido.trim(),
+        cliente_dni: u.dni.trim(),
+        cliente_telefono: u.telefono.trim(),
+        cliente_email: u.email.trim(),
+        barbero_nombre: h.nombre,
+        precio: h.precio_base || 2500,
+        fecha: bookingSelections.date,
+        hora: bookingSelections.time,
+        estado: 'pendiente'
+      });
 
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+    if (error) {
+      console.error("Error guardando reserva en BD:", error);
+      alert("Hubo un problema registrando tu turno en el sistema, pero intentaremos enviarlo por WhatsApp de igual forma.");
+    }
+  } catch (err) {
+    console.error("Excepción al guardar:", err);
+  }
 
-  // Open WhatsApp
-  window.open(whatsappUrl, '_blank');
+  const message = `¡Hola! Aquí está el comprobante de mi turno en JOHE OLMOS ESTILISTA:
+- Cliente: ${u.nombre} ${u.apellido}
+- Barbero: ${h.nombre}
+- Fecha: ${bookingSelections.date}
+- Hora: ${bookingSelections.time} hs
+- Total a abonar: $${h.precio_base || 2500}`;
 
   // Show success state in modal
   customStepContent.innerHTML = `
-    <div class="booking-success">
-      <div class="success-icon">✨</div>
-      <h3>¡Mensaje Preparado!</h3>
-      <p>Se ha abierto WhatsApp para enviar tu reserva.</p>
-      <p>Si el chat no se abrió automáticamente, haz clic abajo:</p>
-      <a href="${whatsappUrl}" target="_blank" class="btn-primary" style="margin-top:10px; text-decoration:none;">Abrir WhatsApp de nuevo</a>
-      <button class="btn-ghost" onclick="closeBooking()" style="margin-top:20px; display:block; width:100%;">Cerrar</button>
+    <div class="booking-success" style="text-align: center;">
+      <div class="success-icon" style="font-size: 3.5rem; margin-bottom: 10px;">✅</div>
+      <h3 style="color: var(--accent); margin-bottom: 10px; font-family: 'Cinzel', serif;">¡Turno Confirmado!</h3>
+      <p style="margin-bottom: 20px; color: #ccc;">Tu reserva fue guardada exitosamente en nuestro sistema.</p>
+      
+      <div class="booking-summary" style="text-align: left; background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px dashed var(--accent);">
+        <p style="margin-bottom: 5px;"><strong>Cliente:</strong> <span style="color: #fff;">${u.nombre} ${u.apellido}</span></p>
+        <p style="margin-bottom: 5px;"><strong>Profesional:</strong> <span style="color: #fff;">${h.nombre}</span></p>
+        <p style="margin-bottom: 5px;"><strong>Día:</strong> <span style="color: #fff;">${bookingSelections.date}</span></p>
+        <p style="margin-bottom: 5px;"><strong>Hora:</strong> <span style="color: #fff;">${bookingSelections.time} hs</span></p>
+        <p style="margin-top: 15px; font-size: 1.1rem;"><strong>Abonará en el local:</strong> <span style="color: var(--accent); font-weight: bold;">$${h.precio_base || 2500}</span></p>
+      </div>
+
+      <button class="btn-primary" id="btnShareTicket" style="margin-top:20px; width:100%;">📤 Compartir o Copiar Ticket</button>
+      <button class="btn-ghost" onclick="closeBooking()" style="margin-top:10px; display:block; width:100%;">Cerrar Ventana</button>
     </div>
   `;
+
+  document.getElementById('btnShareTicket').addEventListener('click', async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Turno en JOHE OLMOS',
+          text: message
+        });
+      } catch (e) {
+        console.error('Error compartiendo:', e);
+      }
+    } else {
+      navigator.clipboard.writeText(message).then(() => {
+        alert('¡Comprobante copiado al portapapeles!');
+      });
+    }
+  });
 
   bookingPrevBtn.classList.add("hidden");
   bookingNextBtn.classList.add("hidden");
