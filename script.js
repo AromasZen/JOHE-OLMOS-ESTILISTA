@@ -754,7 +754,7 @@ function renderBookingStep() {
     const renderTimes = async (selectedDate) => {
       timesContainer.innerHTML = '<div class="spinner-small" style="margin: 0 auto; grid-column: 1/-1;"></div>';
 
-      let baseTimes = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+      let baseTimes = ["13:30", "14:30", "15:30", "16:30", "17:30", "18:30", "19:30"];
       let bookedTimes = [];
 
       try {
