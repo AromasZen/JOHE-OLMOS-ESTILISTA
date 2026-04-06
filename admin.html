@@ -73,8 +73,11 @@
     }
 
     .fc-col-header-cell-cushion,
-    .fc-daygrid-day-number {
-      color: #ccc;
+    .fc-daygrid-day-number,
+    .fc-timegrid-slot-label-cushion,
+    .fc-list-day-text,
+    .fc-list-day-side-text {
+      color: #fff !important;
       text-decoration: none;
     }
 
@@ -114,29 +117,47 @@
 
     /* Responsive Calendar adjustments */
     @media (max-width: 768px) {
-      .fc-header-toolbar {
+      .fc .fc-header-toolbar {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
       }
+
       .fc-toolbar-chunk {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 8px;
+        width: 100%;
       }
+
+      .fc .fc-button {
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+      }
+
       .fc .fc-toolbar-title {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        text-align: center;
       }
+
       #calendar {
         padding: 10px;
+        font-size: 0.9rem;
       }
+
       .admin-header {
         flex-direction: column;
         gap: 15px;
         text-align: center;
       }
+
       .admin-actions button {
         margin-left: 0;
+      }
+
+      /* Fix for specialized mobile toolbar */
+      .fc-header-toolbar .fc-toolbar-chunk:last-child {
+        order: 3;
       }
     }
 
@@ -206,6 +227,10 @@
       color: #aaa;
     }
 
+    .modal-detail-value {
+      color: #fff;
+    }
+
     .contact-buttons hr {
       border: none;
       border-top: 1px solid #333;
@@ -262,6 +287,7 @@
       background: #EA4335;
       color: white;
     }
+
     @media (max-width: 768px) {
       .mobile-menu-btn {
         display: block !important;
@@ -271,10 +297,12 @@
         font-size: 28px;
         cursor: pointer;
       }
+
       .navbar-inner {
         flex-wrap: wrap;
         justify-content: space-between;
       }
+
       .navbar-links {
         width: 100%;
         flex-direction: column;
@@ -285,12 +313,15 @@
         border-radius: 8px;
         display: none;
       }
+
       .navbar-links.active {
         display: flex !important;
       }
+
       .navbar-actions {
         display: none;
       }
+
       .navbar-actions.active {
         display: flex !important;
         width: 100%;
@@ -298,7 +329,6 @@
         margin-top: 10px;
       }
     }
-
   </style>
 
   <!-- Supabase JS -->
