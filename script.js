@@ -854,7 +854,7 @@ function renderBookingStep() {
         </div>
         <div class="form-group">
           <label class="form-label">Teléfono</label>
-          <input type="tel" id="u-tel" placeholder="291 123 4567" class="form-input" required autocomplete="tel" value="${bookingSelections.user.telefono}">
+          <input type="tel" id="u-telefono" placeholder="291 123 4567" class="form-input" required autocomplete="tel" value="${bookingSelections.user.telefono}">
         </div>
       </div>
     `;
@@ -891,7 +891,7 @@ function renderBookingStep() {
           <span class="value highlight">$${h.precio_base || 2500}</span>
         </div>
         <div class="summary-notice">
-          <p>⚠️ Al confirmar, se abrirá WhatsApp para enviar la reserva.</p>
+          <p></p>
         </div>
       </div>
     `;
@@ -1036,4 +1036,3 @@ document.addEventListener('DOMContentLoaded', () => {
 renderStep();
 cargarTrabajos(true);
 cargarBarberos();
-
