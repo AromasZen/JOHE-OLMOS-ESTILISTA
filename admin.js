@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navLinks = document.getElementById('navLinks');
     const navActions = document.getElementById('navActions');
-    
+
     if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            if(navActions) navActions.classList.toggle('active');
+            if (navActions) navActions.classList.toggle('active');
         });
     }
 
@@ -77,13 +77,20 @@ async function initCalendar() {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: isMobile ? 'timeGridDay,listWeek' : 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: isMobile ? 'dayGridMonth,timeGridWeek,timeGridDay' : 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+            today: 'Hoy',
+            month: 'mes',
+            week: 'semana',
+            day: 'dia',
+            list: 'lista'
         },
         slotMinTime: '08:00:00',
         slotMaxTime: '21:00:00',
         allDaySlot: false,
         themeSystem: 'standard',
-        events: async function(info, successCallback, failureCallback) {
+        events: async function (info, successCallback, failureCallback) {
             try {
                 // Fetch reservas
                 const { data, error } = await supabaseClient
@@ -112,7 +119,7 @@ async function initCalendar() {
                 failureCallback(error);
             }
         },
-        eventClick: function(info) {
+        eventClick: function (info) {
             openTurnoModal(info.event.extendedProps);
         }
     });
@@ -132,35 +139,35 @@ function openTurnoModal(data) {
     turnoDetails.innerHTML = `
         <div class="modal-detail-row">
             <span class="modal-detail-label">Cliente:</span>
-            <span>${data.cliente_nombre} ${data.cliente_apellido}</span>
+            <span class="modal-detail-value">${data.cliente_nombre} ${data.cliente_apellido}</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">DNI:</span>
-            <span>${data.cliente_dni || 'N/A'}</span>
+            <span class="modal-detail-value">${data.cliente_dni || 'N/A'}</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">Teléfono:</span>
-            <span>${data.cliente_telefono || 'N/A'}</span>
+            <span class="modal-detail-value">${data.cliente_telefono || 'N/A'}</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">Email:</span>
-            <span style="word-break: break-all; margin-left: 10px;">${data.cliente_email || 'N/A'}</span>
+            <span class="modal-detail-value" style="word-break: break-all; margin-left: 10px;">${data.cliente_email || 'N/A'}</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">Fecha y Hora:</span>
-            <span>${data.fecha} a las ${data.hora} hs</span>
+            <span class="modal-detail-value">${data.fecha} a las ${data.hora} hs</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">Barbero:</span>
-            <span>${data.barbero_nombre}</span>
+            <span class="modal-detail-value">${data.barbero_nombre}</span>
         </div>
         <div class="modal-detail-row">
             <span class="modal-detail-label">Precio:</span>
-            <span style="color:var(--accent); font-weight:bold;">$${data.precio || 'N/A'}</span>
+            <span class="modal-detail-value" style="color:var(--accent); font-weight:bold;">$${data.precio || 'N/A'}</span>
         </div>
         <div class="modal-detail-row" style="border:none;">
             <span class="modal-detail-label">Estado:</span>
-            <span style="text-transform: capitalize;">${data.estado}</span>
+            <span class="modal-detail-value" style="text-transform: capitalize;">${data.estado}</span>
         </div>
     `;
 
@@ -191,12 +198,12 @@ function openTurnoModal(data) {
     turnoModalOverlay.classList.add('active');
 }
 
-window.closeTurnoModal = function() {
+window.closeTurnoModal = function () {
     turnoModalOverlay.classList.remove('active');
 }
 
 // ===== CONFIG MODAL =====
-window.closeConfigModal = function() {
+window.closeConfigModal = function () {
     configModalOverlay.classList.remove('active');
 }
 
@@ -215,7 +222,7 @@ configFechaInput.addEventListener('change', async (e) => {
         .eq('empresa_id', empresaId)
         .eq('fecha', fecha)
         .single();
-    
+
     // Puede que no exista (error no rows)
     if (data) {
         configBloquear.checked = data.bloqueado;
