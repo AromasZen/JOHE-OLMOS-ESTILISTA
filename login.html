@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Admin - JOHE OLMOS ESTILISTA</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -88,40 +90,42 @@
     }
   </style>
 </head>
+
 <body>
 
-<div class="login-box">
-  <h2>Admin Access</h2>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Contraseña">
-  <button onclick="login()">Ingresar</button>
-  <p id="mensaje"></p>
-</div>
+  <div class="login-box">
+    <h2>Admin Access</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="login()">Ingresar</button>
+    <p id="mensaje"></p>
+  </div>
 
-<script>
-  const { createClient } = supabase;
+  <script>
+    const { createClient } = supabase;
 
-  const supabaseClient = createClient(
-     "https://nkkyyqqqusodhwqvprik.supabase.co",
+    const supabaseClient = createClient(
+      "https://nkkyyqqqusodhwqvprik.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ra3l5cXFxdXNvZGh3cXZwcmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMjU1MDIsImV4cCI6MjA4ODYwMTUwMn0.Gs5bdRrv9HNViruVjr8mQl4Oh2Ei1Hyryr0vxpdPPhU"
-  );
+    );
 
-  async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    async function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    if (error) {
-      document.getElementById("mensaje").innerText = "❌ " + error.message;
-    } else {
-      window.location.href = "admin.html";
+      if (error) {
+        document.getElementById("mensaje").innerText = "❌ " + error.message;
+      } else {
+        window.location.href = "admin.html";
+      }
     }
-  }
-</script>
+  </script>
 
 </body>
+
 </html>
